@@ -1,7 +1,10 @@
-const express = require('express')
-
+const express = require('express');
+const { readFileSync } = require('fs');
+const path = require('path')
 const app = express();
 const port = 3000;
+const { parse } = require('node-html-parser');
+
 
 
 // Custom middleware to check if it's working hour
@@ -20,17 +23,19 @@ const workingHourMiddleware = (req, res, next) => {
 app.use(workingHourMiddleware);
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-
+console.log(__dirname);
 app.get('/', (req, res,) => {
-    res.render('layout', { title: 'Home', content: '<%- include("home")%>' });
+    const homeHTML = readFileSync("views/home.ejs", 'utf8',)
+    const root = parse(homeHTML)
+    res.render('home');
 })
 
 app.get('/services', (req, res) => {
-    res.render('layout', { title: 'Our Services', content: '<%- include("services") %>' });
+    res.render('services');
 });
 
 app.get('/contact', (req, res) => {
-    res.render('layout', { title: 'Contact Us', content: '<%- include("contact") %>' });
+    res.render('contact');
 });
 
 
